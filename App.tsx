@@ -1,20 +1,47 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from "react-native";
+import { createStaticNavigation } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import ShoppingListScreen from "./app/screens/ShoppingListScreen";
+import RecipesScreen from "./app/screens/RecipesScreen";
+import NavigationBar from "./app/components/NavigationBar";
+
+const RootStack = createNativeStackNavigator({
+	initialRouteName: "ShoppingCart",
+	screens: {
+		Recipes: {
+			screen: RecipesScreen,
+			options: { title: "Rezepte" },
+		},
+		ShoppingCart: {
+			screen: ShoppingListScreen,
+			options: { title: "Einkaufsliste" },
+		},
+	},
+});
+
+const Navigation = createStaticNavigation(RootStack);
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+	return (
+		<SafeAreaView style={styles.fullWindow}>
+			<View style={{ flex: 1 }}>
+				<Navigation />
+			</View>
+			<View style={styles.navBarContainer}>
+				<NavigationBar />
+			</View>
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+	fullWindow: {
+		flex: 1,
+		justifyContent: "flex-end",
+	},
+	navBarContainer: {
+		height: 60,
+	},
 });
