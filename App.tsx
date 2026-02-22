@@ -5,6 +5,7 @@ import {
 	useNavigationContainerRef,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import ShoppingListScreen from "./app/screens/ShoppingListScreen";
@@ -62,14 +63,16 @@ const Navigation = createStaticNavigation(RootStack);
 export default function App() {
 	const navigationRef = useNavigationContainerRef();
 	return (
-		<SafeAreaView style={styles.fullWindow}>
-			<View style={{ flex: 1 }}>
-				<Navigation ref={navigationRef} />
-			</View>
-			<View style={styles.navBarContainer}>
-				<NavigationBar navigationRef={navigationRef} />
-			</View>
-		</SafeAreaView>
+		<GestureHandlerRootView>
+			<SafeAreaView style={styles.fullWindow}>
+				<View style={{ flex: 1 }}>
+					<Navigation ref={navigationRef} />
+				</View>
+				<View style={styles.navBarContainer}>
+					<NavigationBar navigationRef={navigationRef} />
+				</View>
+			</SafeAreaView>
+		</GestureHandlerRootView>
 	);
 }
 
