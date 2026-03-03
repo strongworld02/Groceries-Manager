@@ -6,7 +6,7 @@ type Recipe = {
 	name: string;
 	ingredients: Ingredient[];
 	steps: RecipeStep[];
-	image: ImageSourcePropType;
+	image?: ImageSourcePropType | undefined;
 };
 
 export default Recipe;

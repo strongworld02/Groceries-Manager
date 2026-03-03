@@ -8,13 +8,13 @@ import { TouchableOpacity, View } from "react-native";
 import SwipeableItem from "react-native-swipeable-item";
 import { ChevronsDown, ChevronsUp } from "lucide-react-native";
 
-import { globals } from "../DataManager";
-import Text from "../components/NativeComponents/Text";
-import Product from "../model/Product";
 import Button from "../components/NativeComponents/Button";
-import UnitSelect from "../components/UnitSelect";
-import TextInput from "../components/NativeComponents/TextInput";
 import Checkbox from "../components/NativeComponents/Checkbox";
+import dataManager, { globals } from "../DataManager";
+import Product from "../model/Product";
+import Text from "../components/NativeComponents/Text";
+import TextInput from "../components/NativeComponents/TextInput";
+import UnitSelect from "../components/UnitSelect";
 
 const ProductsScreen = () => {
 	const [newOpen, setNewOpen] = useState<boolean>(false);
@@ -30,15 +30,16 @@ const ProductsScreen = () => {
 					: a.order - b.order,
 			),
 	);
-	const orderChanged = ({ data }: DragEndParams<Product>) => {
+	const orderChanged = async ({ data }: DragEndParams<Product>) => {
 		const newState: Product[] = [];
 		data.forEach((p, i) => {
 			newState.push({ ...p, order: i });
 		});
 		setProducts(newState);
+		await dataManager.writeProducts(newState);
 	};
 
-	const addItem = () => {
+	const addItem = async () => {
 		let id = 0;
 		products.forEach((p) => {
 			if (p.id >= id) {
@@ -46,24 +47,24 @@ const ProductsScreen = () => {
 			}
 		});
 		const order = products.length > 0 ? products[0].order - 1 : 1;
-		setProducts(
-			[
-				{
-					id: id,
-					name: newName,
-					order: order,
-					unitName: newUnit ?? "",
-					isSingle: newIsSingle,
-				},
-			].concat(products),
-		);
+		const newState = [
+			{
+				id: id,
+				name: newName,
+				order: order,
+				unitName: newUnit ?? "",
+				isSingle: newIsSingle,
+			},
+		].concat(products);
+		setProducts(newState);
 		setNewOpen(false);
 		setNewName("");
 		setNewUnit(null);
 		setNewIsSingle(false);
+		await dataManager.writeProducts(newState);
 	};
 
-	const deleteItem = (id: number) => {
+	const deleteItem = async (id: number) => {
 		const newState: Product[] = [];
 		products.forEach((p) => {
 			if (p.id !== id) {
@@ -71,6 +72,7 @@ const ProductsScreen = () => {
 			}
 		});
 		setProducts(newState);
+		await dataManager.writeProducts(newState);
 	};
 
 	const productRow = ({

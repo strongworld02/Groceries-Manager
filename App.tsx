@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import {
 	createStaticNavigation,
@@ -8,10 +9,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import ShoppingListScreen from "./app/screens/ShoppingListScreen";
-import RecipesScreen from "./app/screens/RecipesScreen";
+import dataManager from "./app/DataManager";
 import NavigationBar from "./app/components/NavigationBar";
 import ProductsScreen from "./app/screens/ProductsScreen";
+import RecipesScreen from "./app/screens/RecipesScreen";
+import ShoppingListScreen from "./app/screens/ShoppingListScreen";
+import Text from "./app/components/NativeComponents/Text";
 import UnitsScreen from "./app/screens/UnitsScreen";
 
 const RootStack = createNativeStackNavigator({
@@ -61,16 +64,29 @@ declare global {
 const Navigation = createStaticNavigation(RootStack);
 
 export default function App() {
+	const [loading, setLoading] = useState<boolean>(true);
+	useEffect(() => {
+		dataManager.readAll().then(() => {
+			setLoading(false);
+		});
+	}, []);
+
 	const navigationRef = useNavigationContainerRef();
 	return (
 		<GestureHandlerRootView>
 			<SafeAreaView style={styles.fullWindow}>
-				<View style={{ flex: 1 }}>
-					<Navigation ref={navigationRef} />
-				</View>
-				<View style={styles.navBarContainer}>
-					<NavigationBar navigationRef={navigationRef} />
-				</View>
+				{loading ? (
+					<Text>Daten werden geladen...</Text>
+				) : (
+					<>
+						<View style={{ flex: 1 }}>
+							<Navigation ref={navigationRef} />
+						</View>
+						<View style={styles.navBarContainer}>
+							<NavigationBar navigationRef={navigationRef} />
+						</View>
+					</>
+				)}
 			</SafeAreaView>
 		</GestureHandlerRootView>
 	);
