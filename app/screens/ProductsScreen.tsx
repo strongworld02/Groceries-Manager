@@ -6,7 +6,6 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import { TouchableOpacity, View } from "react-native";
 import SwipeableItem from "react-native-swipeable-item";
-import { ChevronsDown, ChevronsUp } from "lucide-react-native";
 
 import Button from "../components/NativeComponents/Button";
 import Checkbox from "../components/NativeComponents/Checkbox";
@@ -15,6 +14,7 @@ import Product from "../model/Product";
 import Text from "../components/NativeComponents/Text";
 import TextInput from "../components/NativeComponents/TextInput";
 import UnitSelect from "../components/UnitSelect";
+import Collapse from "../components/Collapse";
 
 const ProductsScreen = () => {
 	const [newOpen, setNewOpen] = useState<boolean>(false);
@@ -133,51 +133,38 @@ const ProductsScreen = () => {
 
 	return (
 		<View>
-			{newOpen ? (
-				<View style={{ borderStyle: "solid", borderBottomWidth: 1 }}>
-					<TouchableOpacity
-						style={{
-							alignItems: "flex-end",
-						}}
-						onPress={(e) => setNewOpen(false)}
-					>
-						<ChevronsUp size={30} />
-					</TouchableOpacity>
-					<TextInput
-						onChangeText={(v) => setNewName(v.trimStart())}
-						placeholder="Namen angeben..."
-						style={{ margin: 5 }}
-						value={newName}
-					/>
-					<View style={{ marginLeft: 5, marginRight: 5 }}>
-						<UnitSelect onChange={setNewUnit} />
-					</View>
-					<View style={{ margin: 5, marginBottom: 10 }}>
-						<Checkbox
-							label="Maximal einmal kaufen"
-							value={newIsSingle}
-							onValueChange={setNewIsSingle}
-						/>
-					</View>
-					<Button
-						disabled={newName.length === 0 || newUnit === null}
-						onPress={addItem}
-						title="Hinzufügen"
-						type="button"
+			<Collapse
+				open={newOpen}
+				setOpen={(open) => {
+					setNewOpen(open);
+					if (!open) {
+						setNewUnit(null);
+					}
+				}}
+			>
+				<TextInput
+					onChangeText={(v) => setNewName(v.trimStart())}
+					placeholder="Bezeichnung"
+					style={{ margin: 5 }}
+					value={newName}
+				/>
+				<View style={{ marginLeft: 5, marginRight: 5 }}>
+					<UnitSelect onChange={setNewUnit} />
+				</View>
+				<View style={{ margin: 5, marginBottom: 10 }}>
+					<Checkbox
+						label="Maximal einmal kaufen"
+						value={newIsSingle}
+						onValueChange={setNewIsSingle}
 					/>
 				</View>
-			) : (
-				<TouchableOpacity
-					style={{
-						alignItems: "flex-end",
-						borderStyle: "solid",
-						borderBottomWidth: 1,
-					}}
-					onPress={(e) => setNewOpen(true)}
-				>
-					<ChevronsDown size={30} />
-				</TouchableOpacity>
-			)}
+				<Button
+					disabled={newName.length === 0 || newUnit === null}
+					onPress={addItem}
+					title="Hinzufügen"
+					type="button"
+				/>
+			</Collapse>
 			<DraggableFlatList
 				activationDistance={15}
 				data={products}

@@ -9,19 +9,30 @@ const TextInput = ({
 	onChangeText,
 	placeholder,
 	style,
+	keyboardType,
 	value,
 }: {
 	onChangeText?: ((text: string) => void) | undefined;
 	placeholder?: string | undefined;
 	style?: StyleProp<TextStyle> | undefined;
+	keyboardType?:
+		| "default"
+		| "number-pad"
+		| "decimal-pad"
+		| "numeric"
+		| "email-address"
+		| "phone-pad"
+		| "url"
+		| undefined;
 	value?: string | undefined;
 }) => {
 	return (
 		<NativeTextInput
+			keyboardType={keyboardType}
 			onChangeText={onChangeText}
+			placeholder={placeholder}
 			style={style === undefined ? styles.input : [styles.input, style]}
 			value={value}
-			placeholder={placeholder}
 		/>
 	);
 };

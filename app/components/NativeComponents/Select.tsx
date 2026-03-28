@@ -15,54 +15,44 @@ const Select = ({
 }: {
 	canSearch?: boolean | undefined;
 	disabled?: boolean | undefined;
+	emptyText?: string | undefined;
 } & (
 	| ({
 			data: string[];
+			defaultValue?: string | undefined;
 	  } & (
 			| {
 					allowEmpty: true;
-					defaultValue?: string | undefined;
-					emptyText: string;
 					onChange: (value: string | null, index: number) => void;
 			  }
-			| ({
+			| {
 					allowEmpty?: false | undefined;
 					onChange: (value: string, index: number) => void;
-			  } & (
-					| { defaultValue?: undefined; emptyText: string }
-					| { defaultValue: string; emptyText?: string | undefined }
-			  ))
+			  }
 	  ))
 	| ({
 			data: { label: string; value: string }[];
+			defaultValue?: { label: string; value: string } | undefined;
 	  } & (
 			| {
 					allowEmpty: true;
-					defaultValue?: { label: string; value: string } | undefined;
-					emptyText: string;
 					onChange: (
 						value: { label: string; value: string } | null,
 						index: number,
 					) => void;
 			  }
-			| ({
+			| {
 					allowEmpty?: false | undefined;
 					onChange: (
 						value: { label: string; value: string },
 						index: number,
 					) => void;
-			  } & (
-					| { defaultValue?: undefined; emptyText: string }
-					| {
-							defaultValue: { label: string; value: string };
-							emptyText?: string | undefined;
-					  }
-			  ))
+			  }
 	  ))
 )) => {
 	const dataObjects = (
 		allowEmpty
-			? [{ label: emptyText, value: null }]
+			? [{ label: emptyText ?? "Keine Auswahl", value: null }]
 			: ([] as { label: string; value: string }[])
 	).concat(
 		data.length === 0
@@ -112,7 +102,8 @@ const Select = ({
 							fontStyle: !selectedItem ? "italic" : "normal",
 						}}
 					>
-						{(selectedItem && selectedItem.value) || (emptyText ?? "")}
+						{(selectedItem && selectedItem.value) ||
+							(emptyText ?? "Keine Auswahl")}
 					</Text>
 					{isOpen ? <ChevronUp size={28} /> : <ChevronDown size={28} />}
 				</View>

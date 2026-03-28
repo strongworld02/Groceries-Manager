@@ -29,12 +29,11 @@ export function buildShoppingList(recipes: Recipe[]): ShoppingItem[] {
 	items.entries().forEach((i) => {
 		const product = globals.products.get(i[0])!;
 		i[1].entries().forEach((e) => {
-			const highestUnit = getInHighestReasonableUnit(e[1], e[0]);
 			shoppingList.push({
 				order: product.order,
 				name: product.name,
-				amount: highestUnit.amount,
-				unitName: highestUnit.unitName,
+				amount: e[1],
+				unitName: e[0],
 			});
 		});
 	});
@@ -77,12 +76,13 @@ function getInLowestUnit(
 	return { amount: amountInLowestUnit, unitName: lowestUnitName };
 }
 
-function getInHighestReasonableUnit(
+export function getInHighestReasonableUnit(
 	amount: number,
 	unitName: string,
-): { amount: number; unitName: string } {
+): { amount: number; unitName: string; unitDisplayName: string } {
 	let amountInHighestUnit = amount;
 	let highestUnitName = unitName;
+	let highestUnitDisplayName = unitName;
 	let higherUnit = globals.units
 		.entries()
 		.find(
@@ -108,6 +108,7 @@ function getInHighestReasonableUnit(
 		}
 		amountInHighestUnit = amountInNextUnit;
 		highestUnitName = higherUnit[1].name;
+		highestUnitDisplayName = higherUnit[1].displayName;
 		higherUnit = globals.units
 			.entries()
 			.find(
@@ -116,5 +117,9 @@ function getInHighestReasonableUnit(
 					u[1].nextHigherUnitName === unitName,
 			);
 	}
-	return { amount: amountInHighestUnit, unitName: highestUnitName };
+	return {
+		amount: amountInHighestUnit,
+		unitName: highestUnitName,
+		unitDisplayName: highestUnitDisplayName,
+	};
 }
