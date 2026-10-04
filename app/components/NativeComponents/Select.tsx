@@ -102,8 +102,9 @@ const Select = ({
 							fontStyle: !selectedItem ? "italic" : "normal",
 						}}
 					>
-						{(selectedItem && selectedItem.value) ||
-							(emptyText ?? "Keine Auswahl")}
+						{!!selectedItem
+							? selectedItem.label
+							: (emptyText ?? "Keine Auswahl")}
 					</Text>
 					{isOpen ? <ChevronUp size={28} /> : <ChevronDown size={28} />}
 				</View>

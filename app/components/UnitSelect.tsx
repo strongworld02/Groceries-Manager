@@ -1,16 +1,20 @@
-import { useMemo } from "react";
+import { PropsWithChildren, useMemo } from "react";
+import { View } from "react-native";
 import { globals } from "../DataManager";
 import Select from "./NativeComponents/Select";
+import Text from "./NativeComponents/Text";
 
 const UnitSelect = ({
 	allowEmpty,
 	defaultValue,
 	disabled,
+	label,
 	onChange,
 	units,
 }: {
 	defaultValue?: string | undefined;
 	disabled?: boolean | undefined;
+	label?: string | undefined;
 	units?: string[] | undefined;
 } & (
 	| {
@@ -29,24 +33,43 @@ const UnitSelect = ({
 	const data = units ?? globalUnits;
 	if (allowEmpty) {
 		return (
-			<Select
-				data={data}
-				allowEmpty={true}
-				defaultValue={defaultValue}
-				disabled={disabled}
-				onChange={onChange}
-			/>
+			<LabelWrapper label={label}>
+				<Select
+					data={data}
+					allowEmpty={true}
+					defaultValue={defaultValue}
+					disabled={disabled}
+					onChange={onChange}
+				/>
+			</LabelWrapper>
 		);
 	}
 	return (
-		<Select
-			data={data}
-			allowEmpty={false}
-			defaultValue={defaultValue}
-			disabled={disabled}
-			emptyText="Einheit auswählen"
-			onChange={onChange}
-		/>
+		<LabelWrapper label={label}>
+			<Select
+				data={data}
+				allowEmpty={false}
+				defaultValue={defaultValue}
+				disabled={disabled}
+				emptyText="Einheit auswählen"
+				onChange={onChange}
+			/>
+		</LabelWrapper>
+	);
+};
+
+const LabelWrapper = ({
+	children,
+	label,
+}: PropsWithChildren<{ label: string | undefined }>) => {
+	if (!label) {
+		return children;
+	}
+	return (
+		<View>
+			<Text>{label}</Text>
+			{children}
+		</View>
 	);
 };
 

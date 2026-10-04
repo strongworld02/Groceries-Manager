@@ -1,5 +1,6 @@
 type Ingredient = {
-	productId: number;
+	productId: number | null;
+	productName: string | null;
 	amount: number;
 	unitName: string;
 };

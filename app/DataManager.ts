@@ -1,18 +1,23 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Product from "./model/Product";
 import Recipe from "./model/Recipe";
+import ShoppingItem from "./model/ShoppingItem";
 import Unit from "./model/Unit";
 
 type GlobalObjectCollection = {
 	products: Map<number, Product>;
-	units: Map<string, Unit>;
 	recipes: Recipe[];
+	selectedRecipes: Set<string>;
+	shoppingList: ShoppingItem[];
+	units: Map<string, Unit>;
 };
 
 export const globals: GlobalObjectCollection = {
 	products: new Map<number, Product>(),
-	units: new Map<string, Unit>(),
 	recipes: [],
+	selectedRecipes: new Set<string>(),
+	shoppingList: [],
+	units: new Map<string, Unit>(),
 };
 
 const dataManager = {
@@ -37,6 +42,16 @@ const dataManager = {
 		if (rawRecipes !== null) {
 			globals.recipes = JSON.parse(rawRecipes) as Recipe[];
 		}
+		const rawSelectedRecipes = await AsyncStorage.getItem("selectedRecipes");
+		if (rawSelectedRecipes !== null) {
+			globals.selectedRecipes = new Set<string>(
+				JSON.parse(rawSelectedRecipes) as string[],
+			);
+		}
+		const rawShoppingList = await AsyncStorage.getItem("shoppingList");
+		if (rawShoppingList !== null) {
+			globals.shoppingList = JSON.parse(rawShoppingList) as ShoppingItem[];
+		}
 	},
 
 	async writeProducts(products: Product[]) {
@@ -50,6 +65,19 @@ const dataManager = {
 	async writeRecipes(recipes: Recipe[]) {
 		await AsyncStorage.setItem("recipes", JSON.stringify(recipes));
 		globals.recipes = recipes;
+	},
+
+	async writeSelectedRecipes(selectedRecipes: string[]) {
+		await AsyncStorage.setItem(
+			"selectedRecipes",
+			JSON.stringify(selectedRecipes),
+		);
+		globals.selectedRecipes = new Set<string>(selectedRecipes);
+	},
+
+	async writeShoppingList(shoppingList: ShoppingItem[]) {
+		await AsyncStorage.setItem("shoppingList", JSON.stringify(shoppingList));
+		globals.shoppingList = shoppingList;
 	},
 
 	async writeUnits(units: Unit[]) {

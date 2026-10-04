@@ -5,7 +5,6 @@ import DraggableFlatList, {
 	ScaleDecorator,
 } from "react-native-draggable-flatlist";
 import { TouchableOpacity, View } from "react-native";
-import SwipeableItem from "react-native-swipeable-item";
 
 import Button from "../components/NativeComponents/Button";
 import Checkbox from "../components/NativeComponents/Checkbox";
@@ -15,6 +14,7 @@ import Text from "../components/NativeComponents/Text";
 import TextInput from "../components/NativeComponents/TextInput";
 import UnitSelect from "../components/UnitSelect";
 import Collapse from "../components/Collapse";
+import RemoveableItem from "../components/RemoveableItem";
 
 const ProductsScreen = () => {
 	const [newOpen, setNewOpen] = useState<boolean>(false);
@@ -90,29 +90,17 @@ const ProductsScreen = () => {
 
 		return (
 			<ScaleDecorator>
-				<SwipeableItem
-					activationThreshold={60}
-					item={item}
-					onChange={(e) => {
-						if (e.openDirection !== "none") {
-							deleteItem(item.id);
-						}
-					}}
-					renderUnderlayLeft={() => (
-						<View style={{ backgroundColor: "#f72626", flex: 1 }} />
-					)}
-					renderUnderlayRight={() => (
-						<View style={{ backgroundColor: "#f72626", flex: 1 }} />
-					)}
-					snapPointsLeft={[400]}
-					snapPointsRight={[400]}
-					swipeEnabled={
-						!isActive &&
-						!globals.recipes.some((r) =>
+				<RemoveableItem<Product>
+					disabled={
+						isActive ||
+						globals.recipes.some((r) =>
 							r.ingredients.some((i) => i.productId === item.id),
 						)
 					}
-					swipeDamping={250}
+					item={item}
+					onDelete={async () => {
+						await deleteItem(item.id);
+					}}
 				>
 					<TouchableOpacity
 						disabled={isActive}
@@ -126,7 +114,7 @@ const ProductsScreen = () => {
 					>
 						<Text>{item.name}</Text>
 					</TouchableOpacity>
-				</SwipeableItem>
+				</RemoveableItem>
 			</ScaleDecorator>
 		);
 	};
@@ -145,13 +133,13 @@ const ProductsScreen = () => {
 				<TextInput
 					onChangeText={(v) => setNewName(v.trimStart())}
 					placeholder="Bezeichnung"
-					style={{ margin: 5 }}
+					style={{ margin: 8 }}
 					value={newName}
 				/>
-				<View style={{ marginLeft: 5, marginRight: 5 }}>
+				<View style={{ marginLeft: 8, marginRight: 8 }}>
 					<UnitSelect onChange={setNewUnit} />
 				</View>
-				<View style={{ margin: 5, marginBottom: 10 }}>
+				<View style={{ margin: 8, marginBottom: 10 }}>
 					<Checkbox
 						label="Maximal einmal kaufen"
 						value={newIsSingle}

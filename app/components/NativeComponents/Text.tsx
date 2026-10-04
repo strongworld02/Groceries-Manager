@@ -4,13 +4,16 @@ import { Text as NativeText, StyleProp, TextStyle } from "react-native";
 const Text = ({
 	children,
 	fontSize,
+	numberOfLines,
 	style,
 }: PropsWithChildren<{
 	fontSize?: number | undefined;
+	numberOfLines?: number | undefined;
 	style?: StyleProp<TextStyle> | undefined;
 }>) => {
 	return (
 		<NativeText
+			numberOfLines={numberOfLines}
 			style={
 				style === undefined
 					? { fontSize: fontSize ?? 18 }

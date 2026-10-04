@@ -4,9 +4,10 @@ import RecipeStep from "./RecipeStep";
 
 type Recipe = {
 	name: string;
-	ingredients: Ingredient[];
-	steps: RecipeStep[];
 	image?: ImageSourcePropType | undefined;
+	ingredients: Ingredient[];
+	source?: string | undefined;
+	steps: RecipeStep[];
 };
 
 export default Recipe;

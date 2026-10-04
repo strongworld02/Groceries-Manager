@@ -5,7 +5,6 @@ import {
 	ListRenderItemInfo,
 	View,
 } from "react-native";
-import SwipeableItem from "react-native-swipeable-item";
 
 import Button from "../components/NativeComponents/Button";
 import Collapse from "../components/Collapse";
@@ -14,6 +13,7 @@ import Text from "../components/NativeComponents/Text";
 import Unit from "../model/Unit";
 import UnitSelect from "../components/UnitSelect";
 import TextInput from "../components/NativeComponents/TextInput";
+import RemoveableItem from "../components/RemoveableItem";
 
 const orderUnits = (units: Unit[]): Unit[] => {
 	const orderedUnits: Unit[] = [];
@@ -135,7 +135,7 @@ const UnitsScreen = () => {
 		}
 		const newState: Unit[] = unitAlreadyExists
 			? updatedUnits
-			: [newUnit].concat(updatedUnits);
+			: orderUnits([newUnit].concat(updatedUnits));
 		setUnits(newState);
 		setNewOpen(false);
 		setNewName("");
@@ -158,24 +158,11 @@ const UnitsScreen = () => {
 		const lowerUnit = units.find((u) => u.nextHigherUnitName === item.name);
 		const color = index % 2 === 0 ? "#bababa" : "#fff";
 		return (
-			<SwipeableItem
-				activationThreshold={60}
+			<RemoveableItem<Unit>
 				item={item}
-				onChange={async (e) => {
-					if (e.openDirection !== "none") {
-						await deleteItem(index);
-					}
+				onDelete={async () => {
+					await deleteItem(index);
 				}}
-				renderUnderlayLeft={() => (
-					<View style={{ backgroundColor: "#f72626", flex: 1 }} />
-				)}
-				renderUnderlayRight={() => (
-					<View style={{ backgroundColor: "#f72626", flex: 1 }} />
-				)}
-				snapPointsLeft={[400]}
-				snapPointsRight={[400]}
-				swipeEnabled={true}
-				swipeDamping={250}
 			>
 				<View
 					style={{
@@ -195,7 +182,7 @@ const UnitsScreen = () => {
 						>{`(${lowerUnit.amountForNextHigherUnit} ${lowerUnit.name})`}</Text>
 					)}
 				</View>
-			</SwipeableItem>
+			</RemoveableItem>
 		);
 	};
 
@@ -211,9 +198,9 @@ const UnitsScreen = () => {
 					}
 				}}
 			>
-				<View style={{ margin: 5 }}>
-					<Text>Bezeichnung</Text>
+				<View style={{ marginLeft: 8, marginRight: 8, marginBottom: 8 }}>
 					<TextInput
+						label="Bezeichnung"
 						onChangeText={(value) => {
 							setNewName(value);
 							const existingEntry = units.find((u) => u.name === value);
@@ -226,20 +213,23 @@ const UnitsScreen = () => {
 						value={newName}
 					/>
 				</View>
-				<View style={{ marginLeft: 5, marginRight: 5, marginBottom: 5 }}>
-					<Text>Kurzform</Text>
-					<TextInput onChangeText={setNewDisplayName} value={newDisplayName} />
+				<View style={{ marginLeft: 8, marginRight: 8, marginBottom: 8 }}>
+					<TextInput
+						label="Kurzform"
+						onChangeText={setNewDisplayName}
+						value={newDisplayName}
+					/>
 				</View>
 				<View
 					style={{
-						marginLeft: 5,
-						marginRight: 5,
+						marginLeft: 8,
+						marginRight: 8,
 						marginBottom: newHigherUnit ? undefined : 10,
 					}}
 				>
-					<Text>{"Nächst höhere Einheit"}</Text>
 					<UnitSelect
 						allowEmpty
+						label="Nächst höhere Einheit"
 						onChange={(unit) => {
 							setNewHigherUnit(unit);
 							if (
@@ -253,7 +243,7 @@ const UnitsScreen = () => {
 					/>
 				</View>
 				{newHigherUnit !== null && (
-					<View style={{ margin: 5, marginBottom: 10 }}>
+					<View style={{ margin: 8, marginBottom: 10 }}>
 						<Text>{`Menge für 1 ${newHigherUnit}`}</Text>
 						<TextInput
 							onChangeText={setNewAmountHigherUnit}

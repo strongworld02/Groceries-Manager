@@ -9,9 +9,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { defaultBackgroundColor, navbarHeight } from "./Constants";
 import dataManager from "./app/DataManager";
 import NavigationBar from "./app/components/NavigationBar";
 import ProductsScreen from "./app/screens/ProductsScreen";
+import RecipeScreen from "./app/screens/RecipeScreen";
 import RecipesScreen from "./app/screens/RecipesScreen";
 import ShoppingListScreen from "./app/screens/ShoppingListScreen";
 import Text from "./app/components/NativeComponents/Text";
@@ -27,6 +29,14 @@ const RootStack = createNativeStackNavigator({
 				headerBackVisible: false,
 				animation: "none",
 			},
+		},
+		Recipe: {
+			screen: RecipeScreen,
+			options: {
+				headerShown: false,
+				animation: "flip",
+			},
+			initialParams: { name: "" },
 		},
 		Recipes: {
 			screen: RecipesScreen,
@@ -51,6 +61,11 @@ const RootStack = createNativeStackNavigator({
 				headerBackVisible: false,
 				animation: "slide_from_right",
 			},
+		},
+	},
+	screenOptions: {
+		contentStyle: {
+			backgroundColor: defaultBackgroundColor,
 		},
 	},
 });
@@ -98,6 +113,6 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-end",
 	},
 	navBarContainer: {
-		height: 60,
+		height: navbarHeight,
 	},
 });
